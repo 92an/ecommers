@@ -1,4 +1,4 @@
-{% load static %}
+    {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'shop/style.css' %}">
@@ -14,21 +15,26 @@
 <body>
     <div class="container">
 
+        <!-- Search bar -->
         <div class="row">
             <div class="col-md-12">
-                <div class="card-body row align-items-center">
-                    <div class="col">
-                        <input type="search" name="item_name" id="item_name" placeholder="Search for product name" class="form-control form-control-borderless">
+                <form class="card card-sm">
+                    <div class="card-body row no-gutters align-items-center">
+                        <div class="col">
+                            <input type="search" name="item_name" placeholder="Search for product name" class="form-control form-control-borderless">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-success">Search</button>
+                        </div>
                     </div>
-                    <div class="col-auto">
-                        <button type="submit" class="btn btn-success">Search</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
 
+        <!-- Items in store -->
         <div class="row">
         {% for product in product_objects %}
+
             <div class="col-md-3">
                 <div class="card">
                     <img src="{{ product.image }}" class="card-img-top">
@@ -39,14 +45,54 @@
                         <div class="card-text">
                            $ {{ product.price }}
                         </div>
-                    </div>
+
+                        <a href="/{{ product.id }}" class="btn btn-warning">View</a>
+                        <button href="" class="btn btn-warning add_cart_button">Add To Cart</button>
+                   </div>
                 </div>
             </div>
+
         {% endfor %}
+        </div>
+
+        <!-- Paginator Menu -->
+        <div class="row">
+            <div class="col-md-4 offset-md-4">
+                <ul class="pagination">
+                    {% if product_objects.has_previous %}
+                        <li class="page-item">
+                            <a href="?page={{ product_objects.previous_page_number }}" class="page-link">Previous</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <a href="?page={{ product_objects.number }}" class="page-link">Current</a>
+                    </li>
+
+                    {% if product_objects.has_next %}
+                        <li class="page-item">
+                            <a href="?page={{ product_objects.next_page_number }}" class="page-link">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
 
     </div>
 </body>
+<script >
+    if(localStorage.getItem("cart") == null) {
+        let cart = {};
+    }
+    else {
+        cart = JSON.parse(localStorage.getItem("cart"));
+    }   
+
+    $(document).on("click", ".add_cart_button", function(){
+        console.log("button is clicked");
+    });
+
+</script>
 </html>
 
 
